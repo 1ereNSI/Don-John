@@ -1,4 +1,6 @@
 import pygame
+import pyscroll
+import pytmx
 pygame.init()
 
 # creer une première classe qui va representer notre joueur
@@ -18,7 +20,7 @@ class Player(pygame.sprite.Sprite) :
 # charger notre joueur
 player = Player()
 
-# generer la fenetre de notre jeu
+#generer la fenètre du jeu
 pygame.display.set_caption("Don John")
 screen = pygame.display.set_mode((1080, 720))
 
