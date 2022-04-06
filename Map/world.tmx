@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="27">
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="31">
  <tileset firstgid="1" source="nature.tsx"/>
  <tileset firstgid="721" source="house.tsx"/>
  <layer id="1" name="background" width="50" height="50">
@@ -294,5 +294,9 @@
   <object id="20" type="collision" x="351" y="290" width="177" height="14"/>
   <object id="24" type="collision" x="575" y="218.5" width="70.5" height="42.25"/>
   <object id="26" type="collision" x="554.667" y="553" width="95.3333" height="43.6667"/>
+  <object id="27" name="enter_house" type="enter_house" x="569.333" y="580.333" width="15.3333" height="18.3333"/>
+  <object id="30" name="enter_house_exit" type="enter_house_exit" x="576.667" y="617.667">
+   <point/>
+  </object>
  </objectgroup>
 </map>
