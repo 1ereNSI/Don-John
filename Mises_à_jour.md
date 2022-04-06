@@ -20,3 +20,10 @@
 * utilisation de super()
 * début class "Map" chargée de s'occuper du stockage des maps et du switch entre deux (test)
 * correction de bugs sur Tiled
+## Semaine du 06/04
+* gestion des map terminée (MapManager, Map, Portal)
+* déplacement du code collision et relatif à la map de game.py à map.py
+* création carte en cours + recherche pour passer derrière les batiments à plusieurs étages (Maxime)
+* test switch_world avec la nouvelle gestion (house = test)
+* utilisation décorateurs (@dataclass)
+* Problèmes de PC
