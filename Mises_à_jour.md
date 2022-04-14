@@ -27,3 +27,15 @@
 * test switch_world avec la nouvelle gestion (house = test)
 * utilisation décorateurs (@dataclass)
 * Problèmes de PC
+## Semaine du 13/04
+* création donjon test + house2 -> switch world OK
+* class Animation -> NPC, player à l'aide des coordonnées de la sprite sheet OK
+* class Dialogue -> f(perso) OK
+* fonctionnalité de dialogues en appuyant sur space devant un NPC (space pour passer)
+* découpage des bâtiments avec un calque diff pour passer derrière
+* class Entity -> généralise class Player pour tous entité (NPC, player)
+* class Map -> register_map(...,npcs)
+* mvt des NPC grâce à un chemin prédéfini (test)
+* recherches importation musique + collision NPC + objects à récupérer
+* réfléxion quant au scénario du jeu final
+
