@@ -1,6 +1,7 @@
 import pygame
 
-from player import Player
+from entity import Player
+from src.dialog import DialogBox
 from src.map import MapManager
 
 
@@ -13,8 +14,9 @@ class Game:
 
         #generer joueur
 
-        self.player = Player(0, 0)
+        self.player = Player()
         self.map_manager = MapManager(self.screen, self.player)
+        self.dialog_box = DialogBox()
 
     def handle_input(self):
 
@@ -49,11 +51,16 @@ class Game:
             self.handle_input()
             self.update()
             self.map_manager.draw()
+            self.dialog_box.render(self.screen)
             pygame.display.flip()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        self.map_manager.check_npc_collisions(self.dialog_box)
+
 
             clock.tick(60)
 
