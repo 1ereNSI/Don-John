@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 import pygame, pytmx, pyscroll
 
+from src.entity import NPC
+
+
 @dataclass
 class Portal:
     from_world: str
@@ -15,6 +18,7 @@ class Map:
     group: pyscroll.PyscrollGroup
     tmx_data: pytmx.TiledMap
     portals: list[Portal]
+    npcs: list[NPC]
 
 class MapManager:
 
@@ -25,11 +29,29 @@ class MapManager:
         self.current_map = "world"
 
         self.register_map("world", portals=[
-            Portal(from_world="world", origin_point="enter_house", target_world="house", teleport_point="spawn_house")
+            Portal(from_world="world", origin_point="enter_house", target_world="house", teleport_point="spawn_house"),
+            Portal(from_world="world", origin_point="enter_house2", target_world="house2", teleport_point="spawn_house"),
+            Portal(from_world="world", origin_point="enter_dungeon", target_world="dungeon", teleport_point="spawn_dungeon")
+        ], npcs=[
+            NPC("paul", nb_points=4, dialog=["Salut copain", "j'ai une formidable quête pour toi", "veux-tu l'entendre ?"])
         ])
-        self.register_map("house")
+        self.register_map("house", portals=[
+            Portal(from_world="house", origin_point="exit_house", target_world="world", teleport_point="enter_house_exit")
+        ])
+        self.register_map("house2", portals=[
+            Portal(from_world="house2", origin_point="exit_house", target_world="world", teleport_point="enter_house2_exit")
+        ])
+        self.register_map("dungeon", portals=[
+            Portal(from_world="dungeon", origin_point="exit_dungeon", target_world="world", teleport_point="enter_dungeon_exit")
+        ])
 
         self.teleport_player("player")
+        self.teleport_npcs()
+
+    def check_npc_collisions(self, dialog_box):
+        for sprite in self.get_group().sprites():
+            if sprite.feet.colliderect(self.player.rect) and type(sprite) is NPC:
+                dialog_box.execute(sprite.dialog)
 
     def check_collisions(self):
 
@@ -46,6 +68,12 @@ class MapManager:
 
         #collisions
         for sprite in self.get_group().sprites():
+
+            if type(sprite) is NPC:
+                if sprite.feet.colliderect(self.player.rect):
+                    sprite.speed = 0
+                else:
+                    sprite.speed = 2
             if sprite.feet.collidelist(self.get_walls()) > -1:
                 sprite.move_back()
 
@@ -55,7 +83,7 @@ class MapManager:
         self.player.position[1] = point.y
         self.player.save_location()
 
-    def register_map(self, name, portals=[]):
+    def register_map(self, name, portals=[], npcs=[]):
 
         # charger la carte (tmx)
         tmx_data = pytmx.util_pygame.load_pygame(f'../map/{name}.tmx')
@@ -71,11 +99,15 @@ class MapManager:
                 walls.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
 
         # dessiner le groupe de calques
-        group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=4)
+        group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=5)
         group.add(self.player)
 
+        # récupérer tous les npcs pour les ajouter au groupe
+        for npc in npcs:
+            group.add(npc)
+
         #enregistrer la nouvelle map chargée
-        self.maps[name] = Map(name, walls, group, tmx_data, portals)
+        self.maps[name] = Map(name, walls, group, tmx_data, portals, npcs)
 
     def get_map(self): return self.maps[self.current_map]
 
@@ -85,6 +117,15 @@ class MapManager:
 
     def get_object(self, name): return self.get_map().tmx_data.get_object_by_name(name)
 
+    def teleport_npcs(self):
+        for map in self.maps:
+            map_data = self.maps[map]
+            npcs = map_data.npcs
+
+            for npc in npcs:
+                npc.load_points(map_data.tmx_data   )
+                npc.teleport_spawn()
+
     #dessiner et faire le centrage
     def draw(self):
         self.get_group().draw(self.screen)
@@ -93,3 +134,6 @@ class MapManager:
     def update(self):
         self.get_group().update()
         self.check_collisions()
+
+        for npc in self.get_map().npcs:
+            npc.move()
