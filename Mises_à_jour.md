@@ -38,4 +38,17 @@
 * mvt des NPC grâce à un chemin prédéfini (test)
 * recherches importation musique + collision NPC + objects à récupérer
 * réfléxion quant au scénario du jeu final
+## Semaine du 20/04
+* Vacances
+## Semaine du 27/04
+* Finition du scénario
+* création class soundManager qui gère l'aspect des musiques et sons
+* nouveau paramètre dans map_register qui est sound
+* le son est un attribut de la class Map() -> chaque map a sa musique
+* quand teleport_player() -> changement de musique
+* collision avec les npcs avec move_back()
+* travail sur la création de maps (Maxime=6+, Ethan=1[village de départ])
+* abandon des maps et sprite test pour utiliser les finaux
+* réflexion récupération objects + écran début et fin jeu + autres
+
 
