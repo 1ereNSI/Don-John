@@ -410,7 +410,7 @@
   <object id="24" type="collision" x="570.667" y="209.167" width="78.5" height="51.5833"/>
   <object id="26" type="collision" x="554.167" y="544.75" width="95.8333" height="51.9167"/>
   <object id="27" name="enter_house" type="enter_house" x="569.333" y="580.333" width="15.3333" height="18.3333"/>
-  <object id="30" name="enter_house_exit" type="enter_house_exit" x="576.667" y="617.667">
+  <object id="30" name="enter_house_exit" type="enter_house_exit" x="568.667" y="600.167">
    <point/>
   </object>
   <object id="31" name="enter_house2_exit" x="584.667" y="268.212">
