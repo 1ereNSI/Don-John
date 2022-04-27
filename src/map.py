@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 import pygame, pytmx, pyscroll
 
-from src.entity import NPC
+from src.entity import NPC, Player
+from src.sounds import SoundManager
 
 
 @dataclass
@@ -19,6 +20,7 @@ class Map:
     tmx_data: pytmx.TiledMap
     portals: list[Portal]
     npcs: list[NPC]
+    sound: str
 
 class MapManager:
 
@@ -27,30 +29,32 @@ class MapManager:
         self.player = player
         self.maps = dict()  # 'house' -> Map("house", walls, group)
         self.current_map = "world"
+        self.sound_manager = SoundManager()
 
-        self.register_map("world", portals=[
+        self.register_map("world", "test_world", portals=[
             Portal(from_world="world", origin_point="enter_house", target_world="house", teleport_point="spawn_house"),
             Portal(from_world="world", origin_point="enter_house2", target_world="house2", teleport_point="spawn_house"),
             Portal(from_world="world", origin_point="enter_dungeon", target_world="dungeon", teleport_point="spawn_dungeon")
         ], npcs=[
             NPC("paul", nb_points=4, dialog=["Salut copain", "j'ai une formidable quête pour toi", "veux-tu l'entendre ?"])
         ])
-        self.register_map("house", portals=[
+        self.register_map("house", "test_world", portals=[
             Portal(from_world="house", origin_point="exit_house", target_world="world", teleport_point="enter_house_exit")
         ])
-        self.register_map("house2", portals=[
+        self.register_map("house2", "dungeon", portals=[
             Portal(from_world="house2", origin_point="exit_house", target_world="world", teleport_point="enter_house2_exit")
         ])
-        self.register_map("dungeon", portals=[
+        self.register_map("dungeon", "test_world", portals=[
             Portal(from_world="dungeon", origin_point="exit_dungeon", target_world="world", teleport_point="enter_dungeon_exit")
         ])
 
         self.teleport_player("player")
         self.teleport_npcs()
+        self.sound_manager.play(self.get_map().sound)
 
     def check_npc_collisions(self, dialog_box):
         for sprite in self.get_group().sprites():
-            if sprite.feet.colliderect(self.player.rect) and type(sprite) is NPC:
+            if sprite.rect.colliderect(self.player.rect) and type(sprite) is NPC:
                 dialog_box.execute(sprite.dialog)
 
     def check_collisions(self):
@@ -63,27 +67,43 @@ class MapManager:
 
                 if self.player.feet.colliderect(rect):
                     copy_portal = portal
+                    self.sound_manager.stop(self.get_map().sound)
                     self.current_map = portal.target_world
+                    self.sound_manager.play(self.get_map().sound)
                     self.teleport_player(copy_portal.teleport_point)
 
         #collisions
+        rect_npc = []
+        for npc in self.get_map().npcs:
+            rect_npc.append(npc.rect)
+
         for sprite in self.get_group().sprites():
 
             if type(sprite) is NPC:
-                if sprite.feet.colliderect(self.player.rect):
+                if sprite.rect.colliderect(self.player.rect):
                     sprite.speed = 0
                 else:
+                    sprite.speed = 1
+            else:
+
+                if sprite.feet.collidelist(rect_npc) > -1:
+                    sprite.move_back()
+                else:
                     sprite.speed = 2
+
             if sprite.feet.collidelist(self.get_walls()) > -1:
                 sprite.move_back()
 
     def teleport_player(self, name):
+
         point = self.get_object(name)
         self.player.position[0] = point.x
         self.player.position[1] = point.y
         self.player.save_location()
 
-    def register_map(self, name, portals=[], npcs=[]):
+
+
+    def register_map(self, name, sound, portals=[], npcs=[]):
 
         # charger la carte (tmx)
         tmx_data = pytmx.util_pygame.load_pygame(f'../map/{name}.tmx')
@@ -107,7 +127,7 @@ class MapManager:
             group.add(npc)
 
         #enregistrer la nouvelle map chargée
-        self.maps[name] = Map(name, walls, group, tmx_data, portals, npcs)
+        self.maps[name] = Map(name, walls, group, tmx_data, portals, npcs, sound)
 
     def get_map(self): return self.maps[self.current_map]
 
@@ -123,7 +143,7 @@ class MapManager:
             npcs = map_data.npcs
 
             for npc in npcs:
-                npc.load_points(map_data.tmx_data   )
+                npc.load_points(map_data.tmx_data)
                 npc.teleport_spawn()
 
     #dessiner et faire le centrage
