@@ -2,35 +2,35 @@ import pygame
 
 from src.animation import AnimateSprite
 
-
 class Entity(AnimateSprite):
 
-    def __init__(self, name, x, y):
-        super().__init__(name)
+    def __init__(self, name, sprite_name, x, y, speed):
+        super().__init__(sprite_name, speed)
         self.image = self.get_image(0, 0)
-        self.image.set_colorkey([0, 0, 0])
+        self.image.set_colorkey(self.image.get_at((0,0)))
         self.rect = self.image.get_rect()
         self.position = [x, y]
         self.feet = pygame.Rect(0, 0, self.rect.width * 0.5, 12)
         self.old_position = self.position.copy()
+        self.speed_entity = speed
 
     def save_location(self): self.old_position = self.position.copy()
 
     def move_right(self):
         self.change_animation("right")
-        self.position[0] += self.speed
+        self.position[0] += self.speed_entity
 
     def move_left(self):
         self.change_animation("left")
-        self.position[0] -= self.speed
+        self.position[0] -= self.speed_entity
 
     def move_up(self):
         self.change_animation("up")
-        self.position[1] -= self.speed
+        self.position[1] -= self.speed_entity
 
     def move_down(self):
         self.change_animation("down")
-        self.position[1] += self.speed
+        self.position[1] += self.speed_entity
 
     def update(self):
         self.rect.topleft = self.position
@@ -44,12 +44,12 @@ class Entity(AnimateSprite):
 class Player(Entity):
     
     def __init__(self):
-        super().__init__("player", 0, 0)
+        super().__init__("player", "ange", 0, 0, 1)
 
 class NPC(Entity):
 
-    def __init__(self, name, nb_points, dialog):
-        super().__init__(name, 0, 0)
+    def __init__(self, name, sprite_name, nb_points, dialog=[]):
+        super().__init__(name, sprite_name, 1, 0, 0)
         self.nb_points = nb_points
         self.points = []
         self.dialog = dialog
@@ -58,7 +58,7 @@ class NPC(Entity):
 
     def move(self):
         current_point = self.current_point
-        target_point = self.current_point + 1
+        target_point = self.current_point + self.speed
         
         if target_point >= self.nb_points:
             target_point = 0
@@ -89,6 +89,10 @@ class NPC(Entity):
             point = tmx_data.get_object_by_name(f"{self.name}_path{num}")
             rect = pygame.Rect(point.x, point.y, point.width, point.height)
             self.points.append(rect)
+
+class Ange(NPC):
+    def __init__(self, name, sprite_name, nb_points):
+        super().__init__(name, sprite_name, nb_points)
 
 
 

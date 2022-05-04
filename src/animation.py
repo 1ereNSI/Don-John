@@ -2,9 +2,9 @@ import pygame
 
 class AnimateSprite(pygame.sprite.Sprite):
 
-    def __init__(self, name):
+    def __init__(self, sprite_name, speed):
         super().__init__()
-        self.sprite_sheet = pygame.image.load(f'../sprites/{name}.png')
+        self.sprite_sheet = pygame.image.load(f'../sprites/{sprite_name}.png')
         self.animation_index = 0
         self.clock = 0
         self.images = {
@@ -13,12 +13,12 @@ class AnimateSprite(pygame.sprite.Sprite):
             'right': self.get_images(64),
             'up': self.get_images(96)
         }
-        self.speed = 2
+        self.speed_change = speed
 
     def change_animation(self, name):
         self.image = self.images[name][self.animation_index]
-        self.image.set_colorkey((0, 0, 0))
-        self.clock += self.speed * 8
+        self.image.set_colorkey(self.image.get_at((0, 0)))
+        self.clock += self.speed_change * 5
 
         if self.clock >= 100:
 
