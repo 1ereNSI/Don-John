@@ -50,5 +50,17 @@
 * travail sur la création de maps (Maxime=6+, Ethan=1[village de départ])
 * abandon des maps et sprite test pour utiliser les finaux
 * réflexion récupération objects + écran début et fin jeu + autres
+## Semaine du 04/05
+* affichage de l'éran de début du jeu sans les boutons (en cours) avec une condition is_playing == True -> enlève l'écran de début
+* la musique du monde n'apparait qu'après la fin de l'écran de démarrage ce qui permettra d'avoir une musique spécifique à l'écran de début
+* Travail sur le design de l'écran de début par un ami
+* création classe Ange() qui hérite de NPC(), les anges sont des ennemies qui téléportent le joueur
+* ajout de l'attribut speed dans le constructeur de Entity(), chaque entitée aura une vitesse définit, l'animation du mvt s'ajustera à la vitesse car AnimateSprite() prend en attribut la vitesse.
+* ajout des mêmes méthodes pour les anges que pour les npcs dans MapManager()
+* nouveau paramètre dans map_register qui est anges + anges = attribut Map() en tant que list(Ange)
+* 3/4 village de départ fini
+* réglage des bugs des sprites (si un sprite possède des pixels noirs puisque set_colorkey(0,0,0), le sprite devient transparent -> set_colorkey(get_at((0,0))) et changement du fond des pngs pour choisir une couleur peu utiliser en arrière plan)
+* changement du nom du jeu en "Liminal"
+* travail sur toutes les autres maps (Tiled) par Maxime (c'est très long à faire)
 
 
