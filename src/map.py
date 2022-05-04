@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import pygame, pytmx, pyscroll
 
-from src.entity import NPC, Player
+from src.entity import NPC, Player, Ange
 from src.sounds import SoundManager
 
 
@@ -20,6 +20,7 @@ class Map:
     tmx_data: pytmx.TiledMap
     portals: list[Portal]
     npcs: list[NPC]
+    anges: list[Ange]
     sound: str
 
 class MapManager:
@@ -28,7 +29,7 @@ class MapManager:
         self.screen = screen
         self.player = player
         self.maps = dict()  # 'house' -> Map("house", walls, group)
-        self.current_map = "world"
+        self.current_map = "Teiko"
         self.sound_manager = SoundManager()
 
         self.register_map("world", "test_world", portals=[
@@ -36,7 +37,7 @@ class MapManager:
             Portal(from_world="world", origin_point="enter_house2", target_world="house2", teleport_point="spawn_house"),
             Portal(from_world="world", origin_point="enter_dungeon", target_world="dungeon", teleport_point="spawn_dungeon")
         ], npcs=[
-            NPC("paul", nb_points=4, dialog=["Salut copain", "j'ai une formidable quête pour toi", "veux-tu l'entendre ?"])
+            NPC("paul", "paul", nb_points=4, dialog=["Salut copain", "j'ai une formidable quête pour toi", "veux-tu l'entendre ?"])
         ])
         self.register_map("house", "test_world", portals=[
             Portal(from_world="house", origin_point="exit_house", target_world="world", teleport_point="enter_house_exit")
@@ -47,10 +48,18 @@ class MapManager:
         self.register_map("dungeon", "test_world", portals=[
             Portal(from_world="dungeon", origin_point="exit_dungeon", target_world="world", teleport_point="enter_dungeon_exit")
         ])
+        self.register_map("Teiko", "dungeon", portals=[
+            Portal(from_world="Teiko", origin_point="teleport_Teiko", target_world="Teiko", teleport_point="player")
+        ], npcs=[], anges=[
+            Ange("ange1", "boss", nb_points=1),
+            Ange("ange2", "ange", nb_points=1)
+        ])
+        self.register_map("house-1", "test_world")
 
-        self.teleport_player("player")
+        self.teleport_player("player2")
         self.teleport_npcs()
-        self.sound_manager.play(self.get_map().sound)
+        self.teleport_anges()
+        #self.sound_manager.play(self.get_map().sound)
 
     def check_npc_collisions(self, dialog_box):
         for sprite in self.get_group().sprites():
@@ -76,6 +85,9 @@ class MapManager:
         rect_npc = []
         for npc in self.get_map().npcs:
             rect_npc.append(npc.rect)
+        rect_ange = []
+        for ange in self.get_map().anges:
+            rect_npc.append(ange.rect)
 
         for sprite in self.get_group().sprites():
 
@@ -91,6 +103,9 @@ class MapManager:
                 else:
                     sprite.speed = 2
 
+                if sprite.feet.collidelist(rect_ange) > -1:
+                    sprite.move_back()
+
             if sprite.feet.collidelist(self.get_walls()) > -1:
                 sprite.move_back()
 
@@ -101,9 +116,7 @@ class MapManager:
         self.player.position[1] = point.y
         self.player.save_location()
 
-
-
-    def register_map(self, name, sound, portals=[], npcs=[]):
+    def register_map(self, name, sound, portals=[], npcs=[], anges=[]):
 
         # charger la carte (tmx)
         tmx_data = pytmx.util_pygame.load_pygame(f'../map/{name}.tmx')
@@ -126,8 +139,11 @@ class MapManager:
         for npc in npcs:
             group.add(npc)
 
+        for ange in anges:
+            group.add(ange)
+
         #enregistrer la nouvelle map chargée
-        self.maps[name] = Map(name, walls, group, tmx_data, portals, npcs, sound)
+        self.maps[name] = Map(name, walls, group, tmx_data, portals, npcs, anges, sound)
 
     def get_map(self): return self.maps[self.current_map]
 
@@ -145,6 +161,15 @@ class MapManager:
             for npc in npcs:
                 npc.load_points(map_data.tmx_data)
                 npc.teleport_spawn()
+
+    def teleport_anges(self):
+        for map in self.maps:
+            map_data = self.maps[map]
+            anges = map_data.anges
+
+            for ange in anges:
+                ange.load_points(map_data.tmx_data)
+                ange.teleport_spawn()
 
     #dessiner et faire le centrage
     def draw(self):
