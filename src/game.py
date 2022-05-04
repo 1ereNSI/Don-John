@@ -1,6 +1,6 @@
 import pygame
 
-from entity import Player
+from entity import Player, NPC
 from src.dialog import DialogBox
 from src.map import MapManager
 
@@ -12,11 +12,18 @@ class Game:
         self.screen = pygame.display.set_mode((1080, 720))
         pygame.display.set_caption("Don John")
 
-        #generer joueur
+        #importer les backgrounds
+        self.begin_screen = pygame.image.load("../images/weird_field.png")
+        self.begin_screen = pygame.transform.scale(self.begin_screen,(self.screen.get_size()))
 
+        #generer joueur et instances
         self.player = Player()
         self.map_manager = MapManager(self.screen, self.player)
         self.dialog_box = DialogBox()
+
+        #voir si le jeu a commencé
+        self.is_playing = False
+
 
     def handle_input(self):
 
@@ -47,12 +54,17 @@ class Game:
 
         while running:
 
-            self.player.save_location()
-            self.handle_input()
-            self.update()
-            self.map_manager.draw()
-            self.dialog_box.render(self.screen)
-            pygame.display.flip()
+            if self.is_playing:
+                self.player.save_location()
+                self.handle_input()
+                self.update()
+                self.map_manager.draw()
+                self.dialog_box.render(self.screen)
+                pygame.display.flip()
+            else:
+                self.screen.blit(self.begin_screen, (0, 0))
+                pygame.display.flip()
+
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -60,6 +72,9 @@ class Game:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         self.map_manager.check_npc_collisions(self.dialog_box)
+                    if self.is_playing == False and event.key == pygame.K_a:
+                        self.is_playing = True
+                        self.map_manager.teleport_player("player1")
 
 
             clock.tick(60)
