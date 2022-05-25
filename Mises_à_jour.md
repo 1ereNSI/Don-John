@@ -62,5 +62,29 @@
 * réglage des bugs des sprites (si un sprite possède des pixels noirs puisque set_colorkey(0,0,0), le sprite devient transparent -> set_colorkey(get_at((0,0))) et changement du fond des pngs pour choisir une couleur peu utiliser en arrière plan)
 * changement du nom du jeu en "Liminal"
 * travail sur toutes les autres maps (Tiled) par Maxime (c'est très long à faire)
+## Semaine 11/05
+* Devoirs communs
+* Bac blanc FR
+* mon anniversaire
+* malade
+* =(
+## Semaine du 25/05
+* ajout des maps finales avec npcs, anges, runes
+* ajout de plusieurs fonction de vérification de collision ou d'état
+* ajout d'états comme is_playing ou is_dreaming
+* finition écran début pause fin
+* réglage des bugs
+* ajout des musqiques et des sons
+* affiche le nombre de rune récupéré
+* finition générale du jeu
+
+# Inspirations et sources
+* Yume Nikki pour map et musique
+* ambiance dreamcore, weirdcore et liminal space
+* spritesheet : rpg_maker.fr
+* sons : banque de son
+* tutos : graven, fab_tats, forums divers, site Tiled
+* le step
+
 
 
