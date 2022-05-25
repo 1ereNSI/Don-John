@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="7">
+ <tileset firstgid="1" source="glauque.tsx"/>
+ <tileset firstgid="257" source="laboratoire3.tsx"/>
+ <layer id="1" name="ui" width="10" height="10">
+  <data encoding="csv">
+278,278,278,278,278,278,278,278,278,278,
+278,278,278,278,7,8,9,278,278,278,
+278,278,278,278,23,24,25,278,278,278,
+278,278,278,278,39,40,41,278,278,278,
+278,278,278,278,278,278,278,278,278,278,
+278,278,278,278,278,278,278,278,278,278,
+278,278,278,278,278,278,278,278,278,278,
+278,278,278,278,278,278,278,278,278,278,
+278,278,278,278,278,278,278,278,278,278,
+278,278,278,278,278,278,278,278,278,278
+</data>
+ </layer>
+ <objectgroup id="2" name="object">
+  <object id="1" type="collision" x="-36.5" y="-15" width="36.5" height="174.5"/>
+  <object id="2" type="collision" x="0" y="-32.5" width="165.5" height="33"/>
+  <object id="3" type="collision" x="160" y="1" width="33.5" height="163"/>
+  <object id="4" type="collision" x="0" y="159" width="169.5" height="32.5"/>
+  <object id="5" name="end" x="76" y="30" width="25" height="15.5"/>
+  <object id="6" name="player" x="45" y="99">
+   <point/>
+  </object>
+ </objectgroup>
+</map>
